@@ -22,84 +22,71 @@ const App: FC = () => {
     return Math.floor(Math.random() * Math.ceil(max));
   };
 
-  // Find coordinates of empty squares
-  const getEmptySquares = (grid: string | any[]) => {
-    let empty = [];
+  const getEmptyGrid = (grid: any[]) => {
+    console.log("grid-getEmptyGrid: ", grid);
+    let empt = [];
     for (let i = 0; i < grid.length; i++) {
-      for (let j = 0; j < grid.length; j++) {
-        if (grid[i][j] === '') {
-          empty.push([i, j]);
+      for (let j = 0; j < grid[i].length; j++) {
+        if (grid[i][j] == 0) {
+          empt.push([i, j]);
         }
       }
     }
-    return empty;
-  }
+    return empt;
+  };
 
-  // Generate a 2 or 4 in a random empty square 
-  const generateNewSquares = (grid: any[]) => {
-    let empty = getEmptySquares(grid);
-    let randomNum = (randomIntNum(2) + 1) * 2;
-    let randomCoord = empty[randomIntNum(empty.length)];
-    grid[randomCoord[0]][randomCoord[1]] = randomNum;
+  const generatedNewGrid = (grid: any[]) => {
+    let empty = getEmptyGrid(grid);
+    let randNum = (randomIntNum(2) + 1) * 2;
+    let randCoord = empty[randomIntNum(empty.length)];
+    grid[randCoord[0]][randCoord[1]] = randNum;
     return grid;
-  }
+  };
 
-  // Check if squares slided; return type: Bool
-  // This method is referenced from:
-  // https://stackoverflow.com/questions/7837456/how-to-compare-arrays-in-javascript
-  // Otherwise, we could loop both grids to compare
-  const checkMoved = (prevGrid: any, currGrid: any[]) => {
-    return (JSON.stringify(prevGrid) !== JSON.stringify(currGrid)) ? true : false;
-  }
+  const checkMoved = (preGrid: any, curGrid: any) => {
+    return String(preGrid) !== String(curGrid) ? true : false;
+  };
 
-  // Check for 2048; return type: Bool
   const checkWin = (grid: any[]) => {
-    return grid.some((row: number[]) => row.includes(2048));
-  }
-
-  // Check if no moves left; return type: Bool
-  const checkMovesLeft = (grid: any[]) => {
-    let moves = [
-      checkMoved(grid, moveLeft(grid)),
-      checkMoved(grid, moveRight(grid)),
-      checkMoved(grid, moveUp(grid)),
-      checkMoved(grid, moveDown(grid))
-    ];
-    return moves.includes(true);
-  }
+    return grid.some((row: number[]) => row.includes(8192));
+  };
 
   const move = (grid: any[], direction: string) => {
-    let newGrid: any[][] = []
-    if (direction === 'left') {
-      newGrid = moveLeft(grid);
-    }
-
-    else if (direction === 'right') {
-      newGrid = moveRight(grid);
-    }
-
-    else if (direction === 'up') {
-      newGrid = moveUp(grid);
-    }
-
-    else if (direction === 'down') {
-      newGrid = moveDown(grid);
+    let newGrid: any[] = [];
+    if (direction === "left") {
+      let [newdata, newScore] = moveLeft(grid, score);
+      newGrid = newdata;
+      setScore(newScore);
+    } else if (direction === "right") {
+      let [newdata, newScore] = moveRight(grid, score);
+      newGrid = newdata;
+      setScore(newScore);
+    } else if (direction === "up") {
+      let [newdata, newScore] = moveUp(grid, score);
+      newGrid = newdata;
+      setScore(newScore);
+    } else if (direction === "down") {
+      let [newdata, newScore] = moveDown(grid, score);
+      newGrid = newdata;
+      setScore(newScore);
     }
 
     if (checkMoved(grid, newGrid)) {
       if (checkWin(newGrid)) {
-        setStatus(1);
-      }
-      else {
-        newGrid = generateNewSquares(newGrid);
-      }
-    } else {
-      if (!checkMovesLeft(newGrid)) {
-        setStatus(0);
+        console.log("win game!!!");
+        setData([
+          [0, 0, 0, 0],
+          [0, 0, 0, 0],
+          [0, 0, 0, 0],
+          [0, 0, 0, 0],
+        ]);
+        setScore(0);
+      } else {
+        newGrid = generatedNewGrid(newGrid);
       }
     }
     return newGrid;
-  }
+  };
   const handleKeyDown = (e: {
     preventDefault: () => void;
     keyCode: number;
@@ -107,21 +94,21 @@ const App: FC = () => {
     e.preventDefault();
     if (e.keyCode == 37) {
       console.log("left");
-      setData(move(data,'left'))
+      setData(move(data, "left"));
     } else if (e.keyCode == 38) {
       console.log("up");
-      setData(move(data,'up'))
+      setData(move(data, "up"));
     } else if (e.keyCode == 39) {
       console.log("right");
-      setData(move(data,'right'))
+      setData(move(data, "right"));
     } else if (e.keyCode == 40) {
       console.log("down");
-      setData(move(data,'down'))
+      setData(move(data, "down"));
     }
   };
 
   useEffect(() => {
-    window.onkeydown = handleKeyDown
+    window.onkeydown = handleKeyDown;
     /* return () => {
       window.onkeydown = !handleKeyDown
     } */
@@ -165,7 +152,7 @@ const App: FC = () => {
           <div>
             <h3>GAME OVER</h3>
             <span id="over-score">score:</span>
-            <span id="over-score">0</span>
+            <span id="over-score">{score}</span>
           </div>
           <button>again</button>
         </div>

@@ -1,135 +1,137 @@
-const moveLeft = (grid: any[]) => {
+const moveLeft = (grid: any[], score: number): [any[], number] => {
   let newGrid = [];
+  let newScore: number = score;
   for (let i = 0; i < grid.length; i++) {
     let row = [];
-    for (let j = 0; j < grid.length; j++) {
-      if (grid[i][j] !== "") {
+    for (let j = 0; j < grid[i].length; j++) {
+      if (grid[i][j] != 0) {
         row.push(grid[i][j]);
       }
     }
-    // Combine
-    for (let n = 0; n < row.length; n++) {
-      if (row[n] === row[n + 1]) {
-        row[n] = parseInt(row[n]) + parseInt(row[n + 1]);
-        row[n + 1] = "";
+
+    for (let k = 0; k < row.length; k++) {
+      if (row[k] == row[k + 1]) {
+        row[k] += row[k + 1];
+        row[k + 1] = 0;
+        newScore += row[k + 1];
       }
     }
-    // Filter out falsy
     row = row.filter((n) => n);
-    // Slide all numbers
-    let emptySquares = grid.length - row.length;
-    while (emptySquares > 0) {
-      row.push("");
-      emptySquares -= 1;
+
+    let len = grid[i].length - row.length;
+    while (len > 0) {
+      row.push(0);
+      len -= 1;
     }
     newGrid.push(row);
   }
-  return newGrid;
+  return [newGrid, newScore];
 };
 
-const moveRight = (grid: any[]) => {
+const moveRight = (grid: any[], score: number): [any[], number] => {
   let newGrid = [];
+  let newScore: number = score;
   for (let i = 0; i < grid.length; i++) {
     let row = [];
-    for (let j = 0; j < grid.length; j++) {
-      if (grid[i][j] !== "") {
-        row.push(grid[i][j]);
+    for (let j = 0; j < grid[i].length; j++) {
+      if (grid[i][j] != 0) {
+        row.unshift(grid[i][j]);
       }
     }
-    // Combine
-    for (let n = row.length; n > 0; n--) {
-      if (row[n] === row[n - 1]) {
-        row[n] = parseInt(row[n]) + parseInt(row[n - 1]);
-        row[n - 1] = "";
+
+    for (let k = row.length - 1; k > 0; k--) {
+      if (row[k] == row[k - 1]) {
+        row[k] += row[k - 1];
+        row[k - 1] = 0;
+        newScore += row[k - 1];
       }
     }
-    // Filter out falsy
     row = row.filter((n) => n);
-    // Slide all numbers
-    let emptySquares = grid.length - row.length;
-    while (emptySquares > 0) {
-      row.unshift("");
-      emptySquares -= 1;
+
+    let len = grid[i].length - row.length;
+    while (len > 0) {
+      row.unshift(0);
+      len -= 1;
     }
     newGrid.push(row);
   }
-  return newGrid;
+  return [newGrid, newScore];
 };
 
-const moveUp = (grid: any[]) => {
+const moveUp = (grid: any[], score: number): [any[], number] => {
   let newGrid = [];
   let tempGrid = [];
+  let newScore: number = score;
   for (let i = 0; i < grid.length; i++) {
     let col = [];
-    for (let j = 0; j < grid.length; j++) {
-      if (grid[j][i] !== "") {
+    for (let j = 0; j < grid[i].length; j++) {
+      if (grid[j][i] != 0) {
         col.push(grid[j][i]);
       }
     }
-    // Combine
-    for (let n = 0; n < col.length; n++) {
-      if (col[n] === col[n + 1]) {
-        col[n] = parseInt(col[n]) + parseInt(col[n + 1]);
-        col[n + 1] = "";
+
+    for (let k = 0; k < col.length; k++) {
+      if (col[k] == col[k + 1]) {
+        col[k] += col[k + 1];
+        col[k + 1] = 0;
+        newScore += col[k + 1];
       }
     }
-    // Filter again
     col = col.filter((n) => n);
-    // Slide all numbers
-    let emptySquares = grid.length - col.length;
-    while (emptySquares > 0) {
-      col.push("");
-      emptySquares -= 1;
+
+    let len = grid[i].length - col.length;
+    while (len > 0) {
+      col.push(0);
+      len -= 1;
     }
     tempGrid.push(col);
   }
-  // Fill new grid at correct coordinates
   for (let i = 0; i < tempGrid.length; i++) {
     let newCol = [];
-    for (let j = 0; j < tempGrid.length; j++) {
+    for (let j = 0; j < tempGrid[i].length; j++) {
       newCol.push(tempGrid[j][i]);
     }
     newGrid.push(newCol);
   }
-  return newGrid;
+  return [newGrid, newScore];
 };
 
-const moveDown = (grid: any[]) => {
+const moveDown = (grid: any[], score: number): [any[], number] => {
   let newGrid = [];
   let tempGrid = [];
+  let newScore: number = score;
   for (let i = 0; i < grid.length; i++) {
     let col = [];
-    for (let j = 0; j < grid.length; j++) {
-      if (grid[j][i] !== "") {
+    for (let j = grid[i].length-1; j > 0; j--) {
+      if (grid[j][i] != 0) {
         col.push(grid[j][i]);
       }
     }
-    // Combine
-    for (let n = col.length; n > 0; n--) {
-      if (col[n] === col[n - 1]) {
-        col[n] = parseInt(col[n]) + parseInt(col[n - 1]);
-        col[n - 1] = "";
+
+    for (let k = 0; k < col.length; k++) {
+      if (col[k] == col[k + 1]) {
+        col[k] += col[k + 1];
+        col[k + 1] = 0;
+        newScore += col[k + 1];
       }
     }
-    // Filter again
     col = col.filter((n) => n);
-    // Slide all numbers
-    let emptySquares = grid.length - col.length;
-    while (emptySquares > 0) {
-      col.unshift("");
-      emptySquares -= 1;
+
+    let len = grid[i].length - col.length;
+    while (len > 0) {
+      col.unshift(0);
+      len -= 1;
     }
     tempGrid.push(col);
   }
-  // Fill new grid at correct coordinates
   for (let i = 0; i < tempGrid.length; i++) {
     let newCol = [];
-    for (let j = 0; j < tempGrid.length; j++) {
+    for (let j = 0; j < tempGrid[i].length; j++) {
       newCol.push(tempGrid[j][i]);
     }
     newGrid.push(newCol);
   }
-  return newGrid;
+  return [newGrid, newScore];
 };
 
 export { moveLeft, moveRight, moveUp, moveDown };
