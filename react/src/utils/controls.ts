@@ -102,16 +102,16 @@ const moveDown = (grid: any[], score: number): [any[], number] => {
   let newScore: number = score;
   for (let i = 0; i < grid.length; i++) {
     let col = [];
-    for (let j = grid[i].length-1; j > 0; j--) {
+    for (let j = 0; j < grid[i].length ; j++) {
       if (grid[j][i] != 0) {
         col.push(grid[j][i]);
       }
     }
 
-    for (let k = 0; k < col.length; k++) {
-      if (col[k] == col[k + 1]) {
-        col[k] += col[k + 1];
-        col[k + 1] = 0;
+    for (let k = col.length - 1; k > 0; k--) {
+      if (col[k] == col[k - 1]) {
+        col[k] += col[k - 1];
+        col[k - 1] = 0;
         newScore += col[k + 1];
       }
     }
