@@ -17,13 +17,34 @@ const App: FC = () => {
   });
   const [score, setScore] = useState<number>(0);
   const [status, setStatus] = useState<number>(1);
+  const [message, setMessage] = useState("");
+
+  const gameOverDisplay = {
+    display: status ? "none" : "block",
+  };
+
+  const newGame = () => {
+    setStatus(1);
+    setScore(0);
+    setData(() => {
+      const initGrid = [
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+      ];
+      let r = Math.floor(Math.random() * 4);
+      let c = Math.floor(Math.random() * 4);
+      initGrid[r][c] = Math.random() > 0.2 ? 2 : 4;
+      return initGrid;
+    });
+  };
 
   const randomIntNum = (max: number) => {
     return Math.floor(Math.random() * Math.ceil(max));
   };
 
   const getEmptyGrid = (grid: any[]) => {
-    console.log("grid-getEmptyGrid: ", grid);
     let empt = [];
     for (let i = 0; i < grid.length; i++) {
       for (let j = 0; j < grid[i].length; j++) {
@@ -48,7 +69,24 @@ const App: FC = () => {
   };
 
   const checkWin = (grid: any[]) => {
-    return grid.some((row: number[]) => row.includes(8192));
+    return grid.some((row: number[]) => row.includes(8194));
+  };
+
+  const checkGameOver = (grid: any[]) => {
+    let [l] = moveLeft(grid, score);
+    let [r] = moveRight(grid, score);
+    let [u] = moveUp(grid, score);
+    let [d] = moveDown(grid, score);
+    let moves = [
+      checkMoved(grid, l),
+      checkMoved(grid, r),
+      checkMoved(grid, u),
+      checkMoved(grid, d),
+    ];
+    console.log('moves: ', moves)
+    console.log('data: ',grid)
+    console.log('r: ',r);
+    return moves.includes(true);
   };
 
   const move = (grid: any[], direction: string) => {
@@ -74,15 +112,17 @@ const App: FC = () => {
     if (checkMoved(grid, newGrid)) {
       if (checkWin(newGrid)) {
         console.log("win game!!!");
-        setData([
-          [0, 0, 0, 0],
-          [0, 0, 0, 0],
-          [0, 0, 0, 0],
-          [0, 0, 0, 0],
-        ]);
-        setScore(0);
+        setMessage("Game Win");
+        setStatus(0);
       } else {
         newGrid = generatedNewGrid(newGrid);
+      }
+    } else {
+      console.log("check-game-over");
+      if (!checkGameOver(newGrid)) {
+        console.log("gameover");
+        setMessage("Game Over");
+        setStatus(0);
       }
     }
     return newGrid;
@@ -93,16 +133,16 @@ const App: FC = () => {
   }) => {
     e.preventDefault();
     if (e.keyCode == 37) {
-      console.log("left");
+      // console.log("left");
       setData(move(data, "left"));
     } else if (e.keyCode == 38) {
-      console.log("up");
+      // console.log("up");
       setData(move(data, "up"));
     } else if (e.keyCode == 39) {
-      console.log("right");
+      // console.log("right");
       setData(move(data, "right"));
     } else if (e.keyCode == 40) {
-      console.log("down");
+      // console.log("down");
       setData(move(data, "down"));
     }
   };
@@ -124,7 +164,9 @@ const App: FC = () => {
             <span id="score">{score}</span>
           </div>
           <div className="newgame-wrapper">
-            <button id="new-game">New Game</button>
+            <button id="new-game" onClick={newGame}>
+              New Game
+            </button>
           </div>
         </div>
       </div>
@@ -147,14 +189,14 @@ const App: FC = () => {
           );
         })}
       </div>
-      <div id="gameover">
+      <div id="gameover" style={gameOverDisplay}>
         <div className="gameover-box">
           <div>
-            <h3>GAME OVER</h3>
+            <h3>{message}</h3>
             <span id="over-score">score:</span>
             <span id="over-score">{score}</span>
           </div>
-          <button>again</button>
+          <button onClick={newGame}>again</button>
         </div>
       </div>
     </>

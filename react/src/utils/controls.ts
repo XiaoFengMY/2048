@@ -12,8 +12,8 @@ const moveLeft = (grid: any[], score: number): [any[], number] => {
     for (let k = 0; k < row.length; k++) {
       if (row[k] == row[k + 1]) {
         row[k] += row[k + 1];
-        row[k + 1] = 0;
         newScore += row[k + 1];
+        row[k + 1] = 0;
       }
     }
     row = row.filter((n) => n);
@@ -35,15 +35,15 @@ const moveRight = (grid: any[], score: number): [any[], number] => {
     let row = [];
     for (let j = 0; j < grid[i].length; j++) {
       if (grid[i][j] != 0) {
-        row.unshift(grid[i][j]);
+        row.push(grid[i][j]);
       }
     }
 
     for (let k = row.length - 1; k > 0; k--) {
       if (row[k] == row[k - 1]) {
         row[k] += row[k - 1];
-        row[k - 1] = 0;
         newScore += row[k - 1];
+        row[k - 1] = 0;
       }
     }
     row = row.filter((n) => n);
@@ -73,8 +73,8 @@ const moveUp = (grid: any[], score: number): [any[], number] => {
     for (let k = 0; k < col.length; k++) {
       if (col[k] == col[k + 1]) {
         col[k] += col[k + 1];
-        col[k + 1] = 0;
         newScore += col[k + 1];
+        col[k + 1] = 0;
       }
     }
     col = col.filter((n) => n);
@@ -102,7 +102,7 @@ const moveDown = (grid: any[], score: number): [any[], number] => {
   let newScore: number = score;
   for (let i = 0; i < grid.length; i++) {
     let col = [];
-    for (let j = 0; j < grid[i].length ; j++) {
+    for (let j = 0; j < grid[i].length; j++) {
       if (grid[j][i] != 0) {
         col.push(grid[j][i]);
       }
@@ -111,8 +111,8 @@ const moveDown = (grid: any[], score: number): [any[], number] => {
     for (let k = col.length - 1; k > 0; k--) {
       if (col[k] == col[k - 1]) {
         col[k] += col[k - 1];
+        newScore += col[k - 1];
         col[k - 1] = 0;
-        newScore += col[k + 1];
       }
     }
     col = col.filter((n) => n);

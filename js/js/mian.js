@@ -80,7 +80,6 @@ let game = {
     let after = String(this.data);
     if (before != after) {
       this.randomNum();
-      console.log("111", this.isGameOver());
       if (this.isGameOver()) {
         this.status = this.gameover;
       }
