@@ -14,7 +14,7 @@ defineProps<{ score: number }>();
         <span id="score">{{ score }}</span>
       </div>
       <div className="newgame-wrapper">
-        <button id="new-game">New Game</button>
+        <button @click="$emit('re-start')" id="new-game">New Game</button>
       </div>
     </div>
   </div>

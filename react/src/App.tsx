@@ -83,9 +83,6 @@ const App: FC = () => {
       checkMoved(grid, u),
       checkMoved(grid, d),
     ];
-    console.log('moves: ', moves)
-    console.log('data: ',grid)
-    console.log('r: ',r);
     return moves.includes(true);
   };
 
@@ -111,16 +108,13 @@ const App: FC = () => {
 
     if (checkMoved(grid, newGrid)) {
       if (checkWin(newGrid)) {
-        console.log("win game!!!");
         setMessage("Game Win");
         setStatus(0);
       } else {
         newGrid = generatedNewGrid(newGrid);
       }
     } else {
-      console.log("check-game-over");
       if (!checkGameOver(newGrid)) {
-        console.log("gameover");
         setMessage("Game Over");
         setStatus(0);
       }
@@ -133,16 +127,16 @@ const App: FC = () => {
   }) => {
     e.preventDefault();
     if (e.keyCode == 37) {
-      // console.log("left");
+      console.log("left");
       setData(move(data, "left"));
     } else if (e.keyCode == 38) {
-      // console.log("up");
+      console.log("up");
       setData(move(data, "up"));
     } else if (e.keyCode == 39) {
-      // console.log("right");
+      console.log("right");
       setData(move(data, "right"));
     } else if (e.keyCode == 40) {
-      // console.log("down");
+      console.log("down");
       setData(move(data, "down"));
     }
   };
